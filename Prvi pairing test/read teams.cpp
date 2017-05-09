@@ -3,6 +3,8 @@
 #include <string>
 #include <vector>
 #include <cstdio>
+#include <algorithm>
+
 using namespace std;
 
 class team
@@ -17,6 +19,7 @@ class team
 
 class debate
     {
+        public:
         int prop;
         int opp;
         float prop_points;
@@ -32,51 +35,48 @@ struct seed_redak
     };
 
 
-class tournament
-    {
-            public:
             int no_rounds;
             vector <debate> rounds[10];
             team teams[1000];
-    };
 
 seed_redak seed [1000];
 
 
 int read_teams()
     {
-        tournament t;
         string line;
         ifstream stream ("ekipe.txt");
         int i =0;
         while (getline(stream,line))
             {
-                t.teams[i].name=line;
-                t.teams[i].id=i;
-                t.teams[i].active_flag=1;
-                stream>>t.teams[i].klub;
+                teams[i].name=line;
+                teams[i].id=i;
+                teams[i].active_flag=1;
+                stream>>teams[i].klub;
                 stream.ignore();
-                cout<<t.teams[i].name<<" "<<t.teams[i].id<<" "<<t.teams[i].klub<<endl;
+                cout<<teams[i].name<<" "<<teams[i].id<<" "<<teams[i].klub<<endl;
                 i++;
             }
         return i;
+
     }
 
-int main()
+bool check_constraint (team a,team b)
 {
-    printf ("\nread:%d",read_teams());
+	if (a.klub==b.klub) return true;
+	for (int i=0;i<no_rounds;i++)
+	{
+		for (int j=0;j<rounds[i].size();j++)
+			{
+			if ((a.id==rounds[i][j].prop) and (b.id==rounds[i][j].opp)) return true;
+			if ((a.id==rounds[i][j].opp) and (b.id==rounds[i][j].prop)) return true;
+			}
+	}
+
+	return false;
 }
 
 
-
-/*
-    check constraints funkcija
-    generate seed funkcija sort(s,s+5,cmp)
-
-    random round funkcija
-    high low round funkcija
-    high high round funkcija
-*/
 
 bool cmp(seed_redak a, seed_redak b)
 {
@@ -88,3 +88,26 @@ bool cmp(seed_redak a, seed_redak b)
     else return a.wins>b.wins;
 
 }
+
+
+
+
+
+
+int main()
+{
+
+}
+
+
+
+/*
+    +check constraints funkcija
+            - fali side contraint !!!!!!!!!!!!!
+    generate seed funkcija sort(s,s+5,cmp)
+
+    random round funkcija
+    high low round funkcija
+    high high round funkcija
+*/
+
